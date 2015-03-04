@@ -1,0 +1,18 @@
+{
+  "name": "lou",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Gaus <rsg1egoman@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "WNdb": "^3.1.1",
+    "async": "^0.9.0",
+    "chalk": "^1.0.0",
+    "natural": "^0.1.28",
+    "underscore": "^1.8.2"
+  }
+}
