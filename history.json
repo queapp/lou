@@ -1,0 +1,71 @@
+{
+  "classifier": {
+    "classFeatures": {
+      "{}": {
+        "0": 2,
+        "1": 7
+      }
+    },
+    "classTotals": {
+      "{}": 8
+    },
+    "totalExamples": 8,
+    "smoothing": 1
+  },
+  "docs": [
+    {
+      "label": "{\"remote\":{\"name\":\"List Manager\",\"tags\":[\"list\"],\"resources\":[{\"name\":\"List Objects\",\"tags\":[\"list\"],\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/create\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"delete\"}}},{\"name\":\"List Items\",\"variables\":{},\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"delete\"}}}]},\"resource\":{\"name\":\"List Items\",\"variables\":{},\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"delete\"}}},\"operation\":\"create\"}",
+      "text": [
+        "add",
+        "milk",
+        "groceri",
+        "list"
+      ]
+    },
+    {
+      "label": "{}",
+      "text": [
+        "weather"
+      ]
+    },
+    {
+      "label": "{\"remote\":{\"name\":\"List Manager\",\"tags\":[\"list\"],\"resources\":[{\"name\":\"List Objects\",\"tags\":[\"list\"],\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/create\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"delete\"}}},{\"name\":\"List Items\",\"variables\":{},\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"delete\"}}}]},\"resource\":{\"name\":\"List Objects\",\"tags\":[\"list\"],\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/create\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"delete\"}}}}",
+      "text": [
+        "weather"
+      ]
+    },
+    {
+      "label": "{}",
+      "text": [
+        "add",
+        "milk",
+        "groceri",
+        "list"
+      ]
+    },
+    {
+      "label": "{\"remote\":{\"name\":\"List Manager\",\"tags\":[\"list\"],\"resources\":[{\"name\":\"List Objects\",\"tags\":[\"list\"],\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/create\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{name}}\",\"method\":\"delete\"}}},{\"name\":\"List Items\",\"variables\":{},\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"delete\"}}}]},\"resource\":{\"name\":\"List Items\",\"variables\":{},\"endpoints\":{\"create\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"post\"},\"read\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}\",\"method\":\"get\"},\"update\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}\",\"method\":\"put\"},\"delete\":{\"url\":\"127.0.0.1:8000/list/{{list_name}}/{{name}}\",\"method\":\"delete\"}}},\"operation\":\"create\"}",
+      "text": [
+        "add",
+        "milk",
+        "groceri",
+        "list"
+      ]
+    }
+  ],
+  "features": {
+    "abc": 1,
+    "weather": 1,
+    "add": 1,
+    "milk": 1,
+    "groceri": 1,
+    "list": 1
+  },
+  "stemmer": {},
+  "lastAdded": 7,
+  "events": {
+    "domain": null,
+    "_events": {},
+    "_maxListeners": 10
+  }
+}

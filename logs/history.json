@@ -1,0 +1,34 @@
+[
+  {
+    "raw": "time",
+
+    "method": "api",
+    "remote": "Time",
+    "endpoint": "getTime",
+    "method": "read"
+  },
+  {
+    "raw": "What is the weather?",
+
+    "method": "api",
+    "remote": "Weather",
+    "endpoint": "getWeatherFor",
+    "method": "read"
+  },
+  {
+    "raw": "weather",
+
+    "method": "api",
+    "remote": "Weather",
+    "endpoint": "getWeatherFor",
+    "method": "read"
+  },
+  {
+    "raw": "Is it raining?",
+
+    "method": "api",
+    "remote": "Weather",
+    "endpoint": "getWeatherFor",
+    "method": "read"
+  }
+]
