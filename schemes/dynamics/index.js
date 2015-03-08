@@ -23,7 +23,7 @@ module.exports = function(raw, callback) {
 
       api.determineCRUDOperation(phrase, function(err, operation) {
         // api.evaluate(resource, resource.endpoints[operation].url, function(err, out) {
-
+          // console.log(remote, resource, operation)
           // Got API!
           callback(null, {
             remote: remote,

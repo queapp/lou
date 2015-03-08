@@ -122,7 +122,7 @@ module.exports = function(apis) {
 
       case "object":
         async.map(x, function(val, callback) {
-          console.log(val)
+          // console.log(val)
           root.evaluate(cxt, val, callback);
         }, callback);
         break;

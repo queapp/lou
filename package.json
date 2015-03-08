@@ -13,6 +13,7 @@
     "async": "^0.9.0",
     "chalk": "^1.0.0",
     "natural": "^0.1.28",
+    "request": "^2.53.0",
     "underscore": "^1.8.2"
   }
 }
