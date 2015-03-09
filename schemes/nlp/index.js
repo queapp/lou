@@ -9,7 +9,6 @@ module.exports = function(raw, callback) {
   async.map(reqs, function(r, cb) {
     r(raw, cb);
   }, function(err, all) {
-    console.log(all)
     if (err) {
       callback(true, null);
     } else {
