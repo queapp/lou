@@ -32,7 +32,12 @@ module.exports = function(raw, callback) {
       } else {
         // relevant data returned
         body.action = "que.nlp.query";
-        callback(null, body);
+        callback(null, {
+          response: {text: body},
+          datapoints: {
+            by: "nlp.que"
+          }
+        });
       }
     });
 

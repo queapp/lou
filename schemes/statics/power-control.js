@@ -7,8 +7,13 @@ module.exports = function(raw, callback) {
     case "restart":
       // TODO restarty stuff here
       callback(null, {
-        action: "lou.power.restart",
-        msg: "Lou is restarting - please wait..."
+        response: {
+          action: "lou.power.restart",
+          msg: "Lou is restarting - please wait..."
+        },
+        datapoints: {
+          by: "statics.power-control"
+        }
       });
       break;
 

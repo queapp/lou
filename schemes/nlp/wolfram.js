@@ -13,8 +13,8 @@ module.exports = function(raw, callback) {
 
       // 'table' formatting
       str = _.map(str.split("\n"), function(row) {
-        parts = row.split('|');
-        return parts[0].trim() + ": " + parts[1].trim();
+        parts = row.split('|')
+        return _.initial(parts).join(";") + ": " + _.last(parts).trim();
       }).join("; ");
 
     };
@@ -33,7 +33,14 @@ module.exports = function(raw, callback) {
       });
       if (primary_pod.length) {
         phrase = primary_pod[0].subpods.map(function(i) { return i.text; }).join(' ');
-        callback(err, formatOutput(phrase));
+        callback(err, {
+          response: {
+            text: formatOutput(phrase)
+          },
+          datapoints: {
+            by: "nlp.wolfram"
+          }
+        });
       } else {
         // data isn't very good
         callback(true, null);

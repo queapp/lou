@@ -26,9 +26,14 @@ module.exports = function(raw, callback) {
           // console.log(remote, resource, operation)
           // Got API!
           callback(null, {
-            remote: remote,
-            resource: resource,
-            operation: operation
+            response: {
+              remote: remote,
+              resource: resource,
+              operation: operation
+            },
+            datapoints: {
+              by: "dynamics."+remote+"."+resource+"."+operation
+            }
           });
 
         // });
