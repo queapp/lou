@@ -1,5 +1,6 @@
 var request = require("request");
 var lou = require("../lou");
+var _ = require("underscore");
 
 module.exports = function(raw, prefs, callback) {
   // callback(null, data) for success
@@ -17,7 +18,14 @@ module.exports = function(raw, prefs, callback) {
       url: host + "/natural/query",
       method: "post",
       json: true,
-      body: { data: raw },
+      body: {
+        data: raw,
+        assumptions: {
+          thing: (_.last(prefs.session) || {}).thing,
+          operation: (_.last(prefs.session) || {}).operation,
+          data: (_.last(prefs.session) || {}).data
+        }
+      },
       headers: {
         'content-type' : 'application/json',
         'authentication': key
@@ -34,7 +42,11 @@ module.exports = function(raw, prefs, callback) {
         callback(null, {
           response: {text: body.msg || body},
           datapoints: {
-            by: "nlp.que"
+            by: "nlp.que",
+
+            thing: body.thing,
+            operation: body.operation,
+            data: body.data
           }
         });
       }
