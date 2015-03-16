@@ -4,23 +4,25 @@ var async = require('async');
 var chalk = require("chalk");
 var _ = require("underscore");
 
-module.exports = function(raw, callback) {
+var app = require("express")();
+
+var query = module.exports = function(raw, callback) {
 
   // try each scheme
-  async.map(["statics", "nlp", "dynamics"], function(a, callback) {
+  async.mapSeries(["statics", "nlp", "dynamics"], function(a, callback) {
     mod = require("./"+path.join("schemes", a));
     mod(raw, function(err, resp) {
-      console.log(chalk.red(a), err, resp)
-      if (err) {
+      console.log(chalk.red(a), resp)
+      if (resp && resp.response) {
+        // worked!
+        callback(true, resp);
+      } else {
         // scheme failed us
         callback(err, null);
-      } else {
-        // worked!
-        callback(err, resp);
       }
     });
   }, function(err, outputs) {
-    // console.log(outputs);
+    // console.log("OUTPUTS", outputs);
     if (outputs && outputs.length) {
       response = _.compact(outputs)[0];
     } else {
@@ -31,6 +33,32 @@ module.exports = function(raw, callback) {
   });
 };
 
-module.exports(process.argv.splice(2).join(' '), function(out) {
-  console.log(chalk.green(JSON.stringify(out, null, 2)));
+// datapoints for sessions
+var data = [];
+
+// do a query
+app.get("/search", function(req, res) {
+  var msg = req.query.q || req.query.query;
+  res.header({"content-type": "application/json"});
+  if (msg) {
+    query(msg, function(out) {
+
+      // add datapoints
+      if (data.length && out.datapoints) {
+        _.last(data).push(out.datapoints);
+      } else {
+        data = [[out.datapoints]];
+      }
+
+      // and, send off the response
+      res.send(JSON.stringify(out));
+    });
+  } else {
+    res.send(JSON.stringify({"error": "No Query Specified. Use parameter q or query."}))
+  }
 });
+
+// start listening
+port = process.env.PORT || 8001;
+console.log(chalk.blue("=> The magic is at :"+port))
+app.listen(port);

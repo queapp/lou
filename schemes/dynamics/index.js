@@ -32,7 +32,7 @@ module.exports = function(raw, callback) {
               operation: operation
             },
             datapoints: {
-              by: "dynamics."+remote+"."+resource+"."+operation
+              by: "dynamics."+remote.name+"."+resource.name+"."+operation
             }
           });
 

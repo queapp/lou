@@ -31,9 +31,8 @@ module.exports = function(raw, callback) {
         callback(null, null);
       } else {
         // relevant data returned
-        body.action = "que.nlp.query";
         callback(null, {
-          response: {text: body},
+          response: {text: body.msg || body},
           datapoints: {
             by: "nlp.que"
           }
