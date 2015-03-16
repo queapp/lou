@@ -12,7 +12,7 @@ var query = module.exports = function(raw, prefs, callback) {
   // try each scheme
   async.mapSeries(["statics", "nlp", "dynamics"], function(a, callback) {
     mod = require("./"+path.join("schemes", a));
-    mod(raw, function(err, resp) {
+    mod(raw, prefs, function(err, resp) {
       console.log(chalk.red(a), resp)
       if (resp && resp.response) {
         // worked!
@@ -36,7 +36,7 @@ var query = module.exports = function(raw, prefs, callback) {
 
 // === session datapoints ===
 var data = [];
-durationBetweenSessions = 10 * 1000;
+durationBetweenSessions = 30 * 1000;
 
 // === query-er ===
 // Let the user perform a query on lou.

@@ -5,9 +5,9 @@ var reqs = [
 ];
 
 // run all nlp stuff
-module.exports = function(raw, callback) {
+module.exports = function(raw, prefs, callback) {
   async.mapSeries(reqs, function(r, cb) {
-    r(raw, function(err, data) {
+    r(raw, prefs, function(err, data) {
       // do we have a decent response?
       if (!err && data && data.response) {
         // cool, we're done.

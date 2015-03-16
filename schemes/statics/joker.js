@@ -1,7 +1,7 @@
 var lou = require("../../");
 
-// power-stuff: like restart, stop/start, etc...
-module.exports = function(raw, callback) {
+// well, this should tell jokes, but it doesn't yet.
+module.exports = function(raw, prefs, callback) {
 
   switch(raw) {
     case "joke":

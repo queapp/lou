@@ -2,7 +2,7 @@ var lou = require("../lou");
 var wa = require("wolfram-alpha");
 var _ = require("underscore");
 
-module.exports = function(raw, callback) {
+module.exports = function(raw, prefs, callback) {
   // callback(null, data) for success
   // callback(true, null) if data isn't relevant
 

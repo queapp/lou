@@ -1,7 +1,7 @@
 var request = require("request");
 var lou = require("../lou");
 
-module.exports = function(raw, callback) {
+module.exports = function(raw, prefs, callback) {
   // callback(null, data) for success
   // callback(true, null) if data isn't relevant
 

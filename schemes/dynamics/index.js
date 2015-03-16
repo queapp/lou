@@ -10,7 +10,7 @@ var ApiDocs = require('./apidocs');
 var api = new ApiDocs(api_imported);
 
 // test against all apis
-module.exports = function(raw, callback) {
+module.exports = function(raw, prefs, callback) {
 
   // look for the remote
   var phrase = raw.split(' ');
