@@ -53,9 +53,9 @@ app.get("/search", function(req, res) {
         out.datapoints.timestamp = (new Date()).getTime();
 
         if (data.length) {
-          _.last(data).push(out.datapoints);
+          data.push(out.datapoints);
         } else {
-          data = [[out.datapoints]];
+          data = [out.datapoints];
         }
       }
 
@@ -79,12 +79,12 @@ app.get("/datapoints", function(req, res) {
 // moved on by now, anyway.
 setInterval(function() {
   now = (new Date()).getTime();
-  pt = _.last(_.last(data));
+  pt = _.last(data);
   if ( pt && pt.timestamp + durationBetweenSessions > now) {
     data = [];
     console.log(chalk.blue("=> Current session has ended."))
   }
-}, 5000);
+}, durationBetweenSessions);
 
 // start listening for connections.
 port = process.env.PORT || 8001;
