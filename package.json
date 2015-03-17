@@ -11,6 +11,7 @@
   "dependencies": {
     "WNdb": "^3.1.1",
     "async": "^0.9.0",
+    "body-parser": "^1.12.1",
     "chalk": "^1.0.0",
     "express": "^4.12.2",
     "natural": "^0.1.28",

@@ -4,7 +4,10 @@ var async = require('async');
 var chalk = require("chalk");
 var _ = require("underscore");
 
+// create express app and parse request body
 var app = require("express")();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 var query = module.exports = function(raw, prefs, callback) {
   prefs = prefs || {};
@@ -40,12 +43,13 @@ durationBetweenSessions = 30 * 1000;
 
 // === query-er ===
 // Let the user perform a query on lou.
-app.get("/search", function(req, res) {
+doSearch = function(req, res) {
   var msg = req.query.q || req.query.query;
   res.header({"content-type": "application/json"});
   if (msg) {
     query(msg, {
-      session: data
+      session: data,
+      body: req.body
     }, function(out) {
 
       // add datapoints
@@ -65,7 +69,9 @@ app.get("/search", function(req, res) {
   } else {
     res.send(JSON.stringify({"error": "No Query Specified. Use parameter q or query."}))
   }
-});
+};
+app.post("/search", doSearch);
+app.get("/search", doSearch)
 
 // === datapoints ===
 // Debug endpoint to show all the current datapoints.
