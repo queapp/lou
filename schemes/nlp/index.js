@@ -1,5 +1,6 @@
 var async = require("async"), _ = require("underscore");
 var reqs = [
+  require("./weather"),
   require("./que"),
   require("./wolfram")
 ];

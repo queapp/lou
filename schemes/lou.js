@@ -1,6 +1,6 @@
 var fs = require("fs"), async = require("async");
 
-module.exports = {
+var lou = module.exports = {
 
   persistant: {
     location: "session/persistant.json",
@@ -45,6 +45,54 @@ module.exports = {
       });
     }
 
+  },
+
+  location: {
+
+    // get current location in lat and lng of a user
+    getCurrentCoords: function(prefs, callback) {
+      if (prefs.body.location) {
+        // use client location
+        callback({
+          lat: prefs.body.location.lat,
+          lng: prefs.body.location.lng
+        });
+      } else {
+        lou.persistant.read("location.gps", function(location) {
+          if (location) {
+            // use stored server location
+            callback({
+              lat: location.lat,
+              lng: location.lng
+            });
+          } else {
+            // well, crap, we don't know where we are.
+            callback({lat: null, lng: null});
+          }
+        });
+      }
+    }
+
+
+
+  },
+
+  // word lists for natural language stuff
+  words: {
+    pronowns: {
+      first: {
+        sing: ["i", "my", "mine"],
+        plur: ["we", "our", "ours"]
+      },
+      second: {
+        sing: ["you", "your"],
+        plur: ["you", "your"]
+      },
+      third: {
+        sing: ["he", "she", "it", "him", "her", "his", "hers", "its"],
+        plur: ["we", "our", "ours"]
+      }
+    }
   }
 
 };

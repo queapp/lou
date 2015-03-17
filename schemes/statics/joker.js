@@ -1,4 +1,4 @@
-var lou = require("../../");
+var lou = require("../lou");
 
 // well, this should tell jokes, but it doesn't yet.
 module.exports = function(raw, prefs, callback) {

@@ -1,4 +1,4 @@
-var lou = require("../../");
+var lou = require("../lou");
 
 // power-stuff: like restart, stop/start, etc...
 module.exports = function(raw, prefs, callback) {

@@ -1,6 +1,7 @@
 var async = require("async"), _ = require("underscore");
 var reqs = [
   require("./joker"),
+  require("./location"),
   require("./power-control")
 ];
 
