@@ -49,19 +49,21 @@ var query = module.exports = function(raw, prefs, callback) {
     // where is the handler, exactly?
     lastHandler = _.last(prefs.session).by;
     handlerPath = ["schemes"].concat(lastHandler.split("."));
-    mod = require( "./"+path.join.apply(path, handlerPath) );
-
-    // call it
-    mod(raw, prefs, function(err, resp) {
-      console.log(chalk.red("previous"), chalk.yellow(lastHandler), resp);
-      if (resp && resp.response) {
-        // worked!
-        callback(resp);
-      } else {
-        // scheme failed us
-        eachScheme(raw, prefs, callback);
-      }
-    });
+    try {
+      mod = require( "./"+path.join.apply(path, handlerPath) );
+    } catch(e) {} finally {
+      // call it
+      mod && mod(raw, prefs, function(err, resp) {
+        console.log(chalk.red("previous"), chalk.yellow(lastHandler), resp);
+        if (resp && resp.response) {
+          // worked!
+          callback(resp);
+        } else {
+          // scheme failed us
+          eachScheme(raw, prefs, callback);
+        }
+      });
+    };
   } else {
     eachScheme(raw, prefs, callback);
   }
