@@ -92,7 +92,8 @@ var lou = module.exports = {
         sing: ["he", "she", "it", "him", "her", "his", "hers", "its"],
         plur: ["we", "our", "ours"]
       }
-    }
+    },
+    question: ["who", "what", "when", "where", "how"]
   }
 
 };
