@@ -1,4 +1,4 @@
-var fs = require("fs"), async = require("async");
+var fs = require("fs"), async = require("async"), _ = require("underscore");
 
 var lou = module.exports = {
 
@@ -75,6 +75,11 @@ var lou = module.exports = {
 
 
 
+  },
+
+  // check on the current session to see if the last request was what was specified
+  currentSession: function(prefs, session) {
+    return prefs.session.length && _.last(prefs.session).by == session;
   },
 
   // word lists for natural language stuff
