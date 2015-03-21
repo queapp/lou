@@ -4,6 +4,7 @@ var wordnet = new natural.WordNet();
 var _ = require("underscore");
 var chalk = require('chalk');
 var async = require("async");
+var request = require("request");
 
 var api_imported = require("./apis");
 var ApiDocs = require('./apidocs');
@@ -25,16 +26,25 @@ module.exports = function(raw, prefs, callback) {
         // api.evaluate(resource, resource.endpoints[operation].url, function(err, out) {
           // console.log(remote, resource, operation)
           // Got API!
-          callback(null, {
-            response: {
-              remote: remote,
-              resource: resource,
-              operation: operation
-            },
-            datapoints: {
-              by: "dynamics."+remote.name+"."+resource.name+"."+operation
-            }
+
+          request(resource.endpoints[operation], function(err, resp, body) {
+            // console.log(body)
+            callback(null, {
+              // response: {
+              //   remote: remote,
+              //   resource: resource,
+              //   operation: operation
+              // },
+              // response: resource.endpoints[operation],
+              response: {
+                text: body
+              },
+              datapoints: {
+                by: "dynamics."+remote.name+"."+resource.name+"."+operation
+              }
+            });
           });
+
 
         // });
       });
