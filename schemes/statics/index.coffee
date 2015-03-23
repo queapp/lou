@@ -1,5 +1,5 @@
-async = require("async")
-_ = require("underscore")
+async = require "async"
+_ = require "underscore"
 reqs = [
   require("./joker")
   require("./location")
@@ -10,10 +10,9 @@ reqs = [
 module.exports = (raw, prefs, callback) ->
   async.mapSeries reqs, ((r, cb) ->
     r raw, prefs, (err, data) ->
-      
+
       # do we have a decent response?
       if not err and data and data.response
-        
         # cool, we're done.
         cb true, data
       else
