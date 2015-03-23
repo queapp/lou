@@ -1,11 +1,12 @@
-fs = require("fs")
-async = require("async")
-_ = require("underscore")
+fs = require "fs"
+async = require "async"
+_ = require "underscore"
+
 lou = module.exports =
   persistant:
     location: "session/persistant.json"
     cache: {}
-    
+
     # write to cache and file
     write: (name, value, callback) ->
       @cache[name] = value
@@ -15,7 +16,7 @@ lou = module.exports =
 
       return
 
-    
+
     # read from cache
     read: (name, callback) ->
       if typeof @cache is "object" and Object.keys(@cache).length isnt 0
@@ -41,7 +42,7 @@ lou = module.exports =
 
       return
 
-    
+
     # regenerate cache
     generateCache: (callback) ->
       fs.readFile @location, (err, data) ->
@@ -52,11 +53,11 @@ lou = module.exports =
       return
 
   location:
-    
+
     # get current location in lat and lng of a user
     getCurrentCoords: (prefs, callback) ->
       if prefs.body.location
-        
+
         # use client location
         callback
           lat: prefs.body.location.lat
@@ -65,14 +66,14 @@ lou = module.exports =
       else
         lou.persistant.read "location.gps", (location) ->
           if location
-            
+
             # use stored server location
             callback
               lat: location.lat
               lng: location.lng
 
           else
-            
+
             # well, crap, we don't know where we are.
             callback
               lat: null
@@ -82,12 +83,12 @@ lou = module.exports =
 
       return
 
-  
+
   # check on the current session to see if the last request was what was specified
   currentSession: (prefs, session) ->
     prefs.session.length and _.last(prefs.session).by is session
 
-  
+
   # word lists for natural language stuff
   words:
     pronowns:
