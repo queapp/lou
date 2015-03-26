@@ -1,6 +1,8 @@
 fs = require "fs"
 async = require "async"
 _ = require "underscore"
+natural = require "natural"
+pos = require "pos"
 
 lou = module.exports =
   persistant:
@@ -142,6 +144,8 @@ lou = module.exports =
   # find sentence types
   find:
 
+    tokenizer: new natural.TreebankWordTokenizer()
+
     # identify each date/time type in the sentence
     # == For example ==
     # lou.find.whens "Can you meet me at 5:00 on monday?", (r) ->
@@ -184,14 +188,27 @@ lou = module.exports =
             out
           break
 
-    # Return the main subject of the command
+    # Return the subject(s) of the command
     # The milk is sour -> milk
     # What time is it? -> time
-    mainTopic: (raw, cb=null) ->
-      # TODO Implement function
+    what: (raw, cb=null) ->
+
+      # tag each word in the sentence
+      words = @tokenizer.tokenize "What time is it in san francisco?"
+      out = new pos.Tagger().tag words
+
+      # search for the nowns
+      subjects = _.filter out, (token) ->
+        [word, tag] = token
+        tag is 'NN'
+
+      # take those subjects and add the relevant data
+      out = _.map subjects, (s) ->
+        text: s[0],
+        index: raw.indexOf s
+
       # if there's a callback, then use it
       if cb
-        cb ""
+        cb out
       else
-        ""
-      break
+        out
