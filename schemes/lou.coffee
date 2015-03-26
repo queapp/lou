@@ -138,3 +138,48 @@ lou = module.exports =
       "where"
       "how"
     ]
+
+  # find sentence types
+  find:
+
+    # identify each date/time type in the sentence
+    # == For example ==
+    # lou.find.whens "Can you meet me at 5:00 on monday?", (r) ->
+    #   console.log r
+    # => { text: '5:00 on monday', index: 19 }
+    whens: (raw, cb=null) ->
+
+      # what constitutes a date/time combo? (aka a when)
+      templates = [
+        # time and absolute day (like "march 25", or "6pm on july 21, 1969")
+        ///
+        (([012]?[0-9])(\:[0-5][0-9])?(\:[0-5][0-9])?)? # time, which is optional
+        ?(am|pm)? # am or pm, optional
+        (on )? # optional prepositions
+        ((january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept|sep|oct|nov|dec)
+        ([0-3]?[0-9](th|rd|st|nd)?) # month and day, with an optional suffix
+        (, ?[0-9]*))/gi # optional year
+        ///
+
+        # time and day of week (like "5:00pm monday")
+        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)? (on )? ?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
+
+        # just times (like "5:00pm")
+        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)?/gi
+      ]
+
+      # check for matches from all the possible templates
+      for i in templates
+        matches = raw.match(i)
+
+        if matches and matches.length
+          out =
+            text: matches[0],
+            index: raw.indexOf matches[0]
+
+          # if there's a callback, then use it
+          if cb
+            cb out
+          else
+            out
+          break
