@@ -183,3 +183,15 @@ lou = module.exports =
           else
             out
           break
+
+    # Return the main subject of the command
+    # The milk is sour -> milk
+    # What time is it? -> time
+    mainTopic: (raw, cb=null) ->
+      # TODO Implement function
+      # if there's a callback, then use it
+      if cb
+        cb ""
+      else
+        ""
+      break
