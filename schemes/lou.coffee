@@ -189,12 +189,17 @@ lou = module.exports =
           break
 
     # Return the subject(s) of the command
-    # The milk is sour -> milk
-    # What time is it? -> time
-    what: (raw, cb=null) ->
+    # == For example ==
+    # lou.find.whats "What time is it in san francisco?", (r) ->
+    #  console.log r
+    #  => {text: "time", index: 5}
+    # Also:
+    # - The milk is sour -> milk
+    # - What time is it? -> time
+    whats: (raw, cb=null) ->
 
       # tag each word in the sentence
-      words = @tokenizer.tokenize "What time is it in san francisco?"
+      words = @tokenizer.tokenize raw
       out = new pos.Tagger().tag words
 
       # search for the nowns

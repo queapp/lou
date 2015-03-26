@@ -3,9 +3,6 @@ lou = require "../lou"
 # power-stuff: like restart, stop/start, etc...
 module.exports = (raw, prefs, callback) ->
 
-  lou.find.what raw, (r) ->
-    console.log r
-
   switch(raw)
     when "restart"
       # TODO restarty stuff here
