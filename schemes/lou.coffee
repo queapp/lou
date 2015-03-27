@@ -166,7 +166,10 @@ lou = module.exports =
         ///
 
         # time and day of week (like "5:00pm monday")
-        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)? (on )? ?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
+        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)? (on )? ?(next )?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
+
+        # just day of week
+        /(next )?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
 
         # just times (like "5:00pm")
         /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)?/gi
