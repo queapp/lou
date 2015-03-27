@@ -217,3 +217,36 @@ lou = module.exports =
         cb out
       else
         out
+
+    # identify any places mentioned in the sentence
+    # == For example ==
+    # lou.find.wheres "Can you meet me at 5:00 on monday at john's house?", (r) ->
+    #   console.log r
+    # => { text: 'john's house', index: 37 }
+    wheres: (raw, cb=null) ->
+
+      # what constitutes a place combo? (aka a where)
+        templates = [
+          # prepositional phrase terminated by punctuation
+          /[ ](in|at) ([^0-9].*)(\.|\?|\!|\,|\;|\:)/gi
+
+          # prepositional phrase terminated by end-of-string
+          /[ ](in|at) ([^0-9].*)$/gi
+        ]
+
+        # check for matches from all the possible templates
+        for i in templates
+          matches = raw.match(i)
+
+          if matches and matches.length
+            m = matches[0].replace(/(at|in|\.|\?|\!|\,|\;|\:)/gi, '').trim() # normalize a match
+            out =
+              text: m,
+              index: raw.indexOf m
+
+            # if there's a callback, then use it
+            if cb
+              cb out
+            else
+              out
+            break
