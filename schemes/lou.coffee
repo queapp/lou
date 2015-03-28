@@ -266,3 +266,134 @@ lou = module.exports =
                 return out
 
             break
+
+  # formatting of found types
+  format:
+
+    # format a date/time to fit into a sentence better
+    whens: (whens) ->
+      # convert to an array if not already
+      whens = [whens] if not whens.length
+
+      _.map _.flatten(whens), (w) ->
+        return "at #{w.text}" if /(([012]?[0-9])(\:[0-5][0-9])?(\:[0-5][0-9])?) ?(am|pm)?/gi.exec(w.text) isnt null
+        return "on #{w.text}" if /(monday|tuesday|wednesday|thursday|friday)/gi.exec(w.text) isnt null
+        return "right now" if w.text.trim() is "now"
+        w.text
+
+
+  # change verbs to match the correct time frame of the query
+  tenses: (raw, whens) ->
+    now = new Date()
+    date = whens[0] or whens
+    date = date.ref if date.ref
+
+    # no tense info? Just keep it how it is.
+    if date.length is 0 then return raw
+
+    verbConjugations =
+      present: [
+        {
+          subjects: [
+            /you/gi
+            /they/gi
+            /we/gi
+          ]
+          verb: "are"
+        }
+        {
+          subjects: [
+            /he/gi
+            /she/gi
+            /it/gi
+          ]
+          verb: "is"
+        }
+        {
+          subjects: [
+            /[iI]/gi
+          ]
+          verb: "am"
+        }
+      ]
+      past: [
+        {
+          subjects: [
+            /you/gi
+            /they/gi
+            /we/gi
+          ]
+          verb: "were"
+        }
+        {
+          subjects: [
+            /he/gi
+            /she/gi
+            /it/gi
+          ]
+          verb: "was"
+        }
+        {
+          subjects: [
+            /[iI]/gi
+          ]
+          verb: "was"
+        }
+      ]
+      future: [
+        {
+          subjects: [
+            /[iI]/gi
+            /you/gi
+            /they/gi
+            /we/gi
+            /he/gi
+            /she/gi
+            /it/gi
+          ]
+          verb: "will be"
+        }
+      ]
+
+
+    # in the past, future, or present?
+    switch
+
+      # == past ==
+      when now < date
+        console.log "PAST", now, date, now < date
+        for conj in verbConjugations.past
+
+          # find all the matching subjects
+          matches = conj.subjects.filter (c) ->
+            raw.match(c) isnt null
+
+          if matches.length
+            return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
+
+
+
+      # == future ==
+      when now > date
+        console.log "FUTR", now, date, now > date
+        for conj in verbConjugations.future
+
+          # find all the matching subjects
+          matches = conj.subjects.filter (c) ->
+            raw.match(c) isnt null
+
+          if matches.length
+            return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
+
+
+      # == present ==
+      else
+        console.log "PRES", now, date
+        for conj in verbConjugations.present
+
+          # find all the matching subjects
+          matches = conj.subjects.filter (c) ->
+            raw.match(c) isnt null
+
+          if matches.length
+            return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)

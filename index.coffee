@@ -4,6 +4,8 @@ async = require("async")
 chalk = require("chalk")
 _ = require("underscore")
 
+lou = require "./schemes/lou"
+
 # create express app and parse request body
 app = require("express")()
 bodyParser = require("body-parser")
@@ -42,8 +44,19 @@ query = module.exports = (raw, prefs, callback) ->
       # console.log("OUTPUTS", outputs);
       if outputs and outputs.length
         response = _.compact(outputs)[0]
+
+        # make sure the sentence uses the correct tense of verb for the
+        # specified time frame.
+        if response.response.msg
+          lou.find.whens response.response.msg, (whens) ->
+            console.log chalk.cyan(
+              "Time Frame:",
+              whens.length and whens[0].ref or "now"
+            )
+            response.response.msg = lou.tenses(response.response.msg, whens)
       else
         response = "NOTHING"
+
       callback response
       return
 
@@ -64,6 +77,16 @@ query = module.exports = (raw, prefs, callback) ->
       mod and mod(raw, prefs, (err, resp) ->
         console.log chalk.red("previous"), chalk.yellow(lastHandler), resp
         if resp and resp.response
+
+          # make sure the sentence uses the correct tense of verb for the
+          # specified time frame.
+          if resp.response.msg
+            lou.find.whens resp.response.msg, (whens) ->
+              console.log chalk.cyan(
+                "Time Frame:",
+                whens.length and whens[0].ref or "now"
+              )
+              resp.response.msg = lou.tenses(resp.response.msg, whens)
 
           # worked!
           callback resp
