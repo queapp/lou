@@ -3,6 +3,7 @@ async = require "async"
 _ = require "underscore"
 natural = require "natural"
 pos = require "pos"
+chrono = require "chrono-node"
 
 lou = module.exports =
   persistant:
@@ -176,21 +177,26 @@ lou = module.exports =
       ]
 
       # check for matches from all the possible templates
-      for i in templates
-        matches = raw.match(i)
-
-        if matches and matches.length
-          out =
-            text: matches[0],
-            index: raw.indexOf matches[0]
-
-          # if there's a callback, then use it
-          if cb
-            cb out
-            return
-          else
-            return out
-          break
+      # for i in templates
+      #   matches = raw.match(i)
+      #
+      #   if matches and matches.length
+      #     out =
+      #       text: matches[0],
+      #       index: raw.indexOf matches[0]
+      #
+      #     # if there's a callback, then use it
+      #     if cb
+      #       cb out
+      #       return
+      #     else
+      #       return out
+      #     break
+      if cb
+        cb chrono.parse(raw)
+        return
+      else
+        return chrono.parse(raw)
 
       # if there's a callback, then use it
       if cb then cb text: "now" else text: "now"
@@ -209,10 +215,10 @@ lou = module.exports =
       words = @tokenizer.tokenize raw
       out = new pos.Tagger().tag words
 
-      # search for the nowns
+      # search for the nowns, pronowns, and adjectives
       subjects = _.filter out, (token) ->
         [word, tag] = token
-        tag is 'NN'
+        'N' in tag or 'J' in tag or tag is 'PRP'
 
       # take those subjects and add the relevant data
       out = _.map subjects, (s) ->
@@ -252,7 +258,8 @@ lou = module.exports =
             # let's do some filtering to get rid of any accidental
             # "when" input.
             @whens raw, (whens) ->
-              m = m.replace whens.text, ""
+              for w in whens
+                m = m.replace w.text, ""
 
               out =
                 text: m,
