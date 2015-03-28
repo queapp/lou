@@ -191,6 +191,9 @@ lou = module.exports =
             out
           break
 
+      # if there's a callback, then use it
+      if cb then cb text: "now" else text: "now"
+
     # Return the subject(s) of the command
     # == For example ==
     # lou.find.whats "What time is it in san francisco?", (r) ->
@@ -234,7 +237,7 @@ lou = module.exports =
           /[ ](in|at) ([^0-9].*)(\.|\?|\!|\,|\;|\:)/gi
 
           # prepositional phrase terminated by end-of-string
-          /[ ](in|at) ([^0-9].*)$/gi
+          /[ ](in|at) ([^0-9].*) ?(?!yesterday)$/gi
         ]
 
         # check for matches from all the possible templates
@@ -243,13 +246,21 @@ lou = module.exports =
 
           if matches and matches.length
             m = matches[0].replace(/(at|in|\.|\?|\!|\,|\;|\:)/gi, '').trim() # normalize a match
-            out =
-              text: m,
-              index: raw.indexOf m
 
-            # if there's a callback, then use it
-            if cb
-              cb out
-            else
-              out
+            # because of the similarity between wheres and whens,
+            # let's do some filtering to get rid of any accidental
+            # "when" input.
+            @whens raw, (whens) ->
+              m = m.replace whens.text, ""
+
+              out =
+                text: m,
+                index: raw.indexOf m
+
+              # if there's a callback, then use it
+              if cb
+                cb out
+              else
+                out
+
             break
