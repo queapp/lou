@@ -15,7 +15,7 @@ durationBetweenSessions = 30 * 1000
 query = module.exports = (raw, prefs, callback) ->
   prefs = prefs or {}
   console.log "---"
-  
+
   # try each scheme, one at a time
   eachScheme = (raw, prefs, callback) ->
     async.mapSeries [
@@ -27,18 +27,18 @@ query = module.exports = (raw, prefs, callback) ->
       mod raw, prefs, (err, resp) ->
         console.log chalk.red(a), resp
         if resp and resp.response
-          
+
           # worked!
           callback true, resp
         else
-          
+
           # scheme failed us
           callback err, null
         return
 
       return
     ), (err, outputs) ->
-      
+
       # console.log("OUTPUTS", outputs);
       if outputs and outputs.length
         response = _.compact(outputs)[0]
@@ -49,26 +49,26 @@ query = module.exports = (raw, prefs, callback) ->
 
     return
 
-  
+
   # try the last handler that was invoked
   if prefs.session.length
-    
+
     # where is the handler, exactly?
     lastHandler = _.last(prefs.session).by
     handlerPath = ["schemes"].concat(lastHandler.split("."))
     try
       mod = require("./" + path.join.apply(path, handlerPath))
     finally
-      
+
       # call it
       mod and mod(raw, prefs, (err, resp) ->
         console.log chalk.red("previous"), chalk.yellow(lastHandler), resp
         if resp and resp.response
-          
+
           # worked!
           callback resp
         else
-          
+
           # scheme failed us
           eachScheme raw, prefs, callback
         return
@@ -89,7 +89,7 @@ doSearch = (req, res) ->
       body: req.body
     , (out) ->
       console.log chalk.yellow("out"), out.response
-      
+
       # add datapoints
       if out.datapoints
         out.datapoints.timestamp = (new Date()).getTime()
@@ -97,7 +97,7 @@ doSearch = (req, res) ->
           data.push out.datapoints
         else
           data = [out.datapoints]
-      
+
       # and, send off the response
       res.send JSON.stringify(out)
       return
@@ -131,6 +131,7 @@ app.get "/datapoints", (req, res) ->
 # }, durationBetweenSessions);
 
 # start listening for connections.
-port = process.env.PORT or 8001
-console.log chalk.blue("=> The magic is at :" + port)
-app.listen port
+if not module.parent
+  port = process.env.PORT or 8001
+  console.log chalk.blue("=> The magic is at :" + port)
+  app.listen port
