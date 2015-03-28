@@ -187,8 +187,9 @@ lou = module.exports =
           # if there's a callback, then use it
           if cb
             cb out
+            return
           else
-            out
+            return out
           break
 
       # if there's a callback, then use it
@@ -260,7 +261,8 @@ lou = module.exports =
               # if there's a callback, then use it
               if cb
                 cb out
+                return
               else
-                out
+                return out
 
             break
