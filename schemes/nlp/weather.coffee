@@ -75,7 +75,8 @@ module.exports = (raw, prefs, callback) ->
   # look for places and times specified within the sentence
   lou.find.wheres raw, (wheres) ->
     lou.find.whens raw, (whens) ->
-      whenDate = new Date(whens.ref)
+      whenDate = whens.ref
+      whenDate = whens[0].ref or whens[0] if whens.length
 
       switch
 

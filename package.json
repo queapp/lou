@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "SILENT=1 jasmine-node --coffee spec/"
   },
   "author": "Ryan Gaus <rsg1egoman@gmail.com>",
   "license": "MIT",

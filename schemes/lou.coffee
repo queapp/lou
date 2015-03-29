@@ -225,7 +225,7 @@ lou = module.exports =
               m = m.replace w.text, ""
 
             out =
-              text: m,
+              text: m.replace(/[0-9]/gi, "").trim(),
               index: raw.indexOf m
 
             # if there's a callback, then use it
@@ -338,7 +338,7 @@ lou = module.exports =
 
       # == past ==
       when now < date
-        console.log "PAST", now, date, now < date
+        # console.log "PAST", now, date, now < date
         for conj in verbConjugations.past
 
           # find all the matching subjects
@@ -352,7 +352,7 @@ lou = module.exports =
 
       # == future ==
       when now > date
-        console.log "FUTR", now, date, now > date
+        # console.log "FUTR", now, date, now > date
         for conj in verbConjugations.future
 
           # find all the matching subjects
@@ -365,7 +365,7 @@ lou = module.exports =
 
       # == present ==
       else
-        console.log "PRES", now, date
+        # console.log "PRES", now, date
         for conj in verbConjugations.present
 
           # find all the matching subjects

@@ -11,12 +11,14 @@ app = require("express")()
 bodyParser = require("body-parser")
 app.use bodyParser.json()
 
+silent = if process.env.SILENT then true else false
+
 # === session datapoints ===
 data = []
 durationBetweenSessions = 30 * 1000
 query = module.exports = (raw, prefs, callback) ->
   prefs = prefs or {}
-  console.log "---"
+  silent or console.log "---"
 
   # try each scheme, one at a time
   eachScheme = (raw, prefs, callback) ->
@@ -27,7 +29,7 @@ query = module.exports = (raw, prefs, callback) ->
     ], ((a, callback) ->
       mod = require("./" + path.join("schemes", a))
       mod raw, prefs, (err, resp) ->
-        console.log chalk.red(a), resp
+        silent or console.log chalk.red(a), resp
         if resp and resp.response
 
           # worked!
@@ -49,7 +51,7 @@ query = module.exports = (raw, prefs, callback) ->
         # specified time frame.
         if response.response.msg
           lou.find.whens response.response.msg, (whens) ->
-            console.log chalk.cyan(
+            silent or console.log chalk.cyan(
               "Time Frame:",
               whens.length and whens[0].ref or "now"
             )
@@ -64,7 +66,7 @@ query = module.exports = (raw, prefs, callback) ->
 
 
   # try the last handler that was invoked
-  if prefs.session.length
+  if prefs.session and prefs.session.length
 
     # where is the handler, exactly?
     lastHandler = _.last(prefs.session).by
@@ -75,14 +77,14 @@ query = module.exports = (raw, prefs, callback) ->
 
       # call it
       mod and mod(raw, prefs, (err, resp) ->
-        console.log chalk.red("previous"), chalk.yellow(lastHandler), resp
+        silent or console.log chalk.red("previous"), chalk.yellow(lastHandler), resp
         if resp and resp.response
 
           # make sure the sentence uses the correct tense of verb for the
           # specified time frame.
           if resp.response.msg
             lou.find.whens resp.response.msg, (whens) ->
-              console.log chalk.cyan(
+              silent or console.log chalk.cyan(
                 "Time Frame:",
                 whens.length and whens[0].ref or "now"
               )
