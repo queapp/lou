@@ -49,14 +49,6 @@ module.exports = (raw, prefs, callback) ->
     "cold"
   ]
 
-  sunRiseSetWords = [
-    "sun"
-    "rise"
-    "set"
-    "sunrise"
-    "sunset"
-  ]
-
   humidityWords = [
     "humidity"
     "moistness"
@@ -106,6 +98,30 @@ module.exports = (raw, prefs, callback) ->
                 msg: "#{cond} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
               datapoints:
                 by: "nlp.weather"
+                wheres: wheres
+                whens: whens
+
+        # Humidity: give persent humidity as a response
+        when matches(humidityWords)
+          request
+            url: "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22"+wheres.text+"%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+            method: "get"
+          , (error, response, body) ->
+            body = (JSON.parse body or query: null).query
+
+            # respond if humidity info is available
+            if whenDate.getDay() is (new Date()).getDay() and body.results.channel.atmosphere
+              cond = "the humidity is #{body.results.channel.atmosphere.humidity}% in #{wheres.text} #{lou.format.whens(whens)}"
+            else
+              cond = "no humidity information is available for that date or time"
+
+            callback null,
+              response:
+                msg: cond.toLowerCase().trim()
+              datapoints:
+                by: "nlp.weather"
+                wheres: wheres
+                whens: whens
 
         # General Weather: just fetch the weather as a string
         when matches(weatherWords)
