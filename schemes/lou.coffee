@@ -347,6 +347,8 @@ lou = module.exports =
 
           if matches.length
             return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
+          else
+            return raw
 
 
 
@@ -361,6 +363,8 @@ lou = module.exports =
 
           if matches.length
             return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
+          else
+            return raw
 
 
       # == present ==
@@ -374,3 +378,5 @@ lou = module.exports =
 
           if matches.length
             return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
+          else
+            return raw

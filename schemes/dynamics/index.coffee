@@ -10,39 +10,42 @@ api = new ApiDocs(api_imported)
 
 # test against all apis
 module.exports = (raw, prefs, callback) ->
-  
+
   # look for the remote
   phrase = raw.split(" ")
   api.searchFor api_imported, phrase, (err, remote) ->
     throw err  if err
-    
+
     # look for the resource in the remote
     api.searchFor remote.resources, phrase, (err, resource) ->
-      
+
       # console.log(resource);
       api.determineCRUDOperation phrase, (err, operation) ->
-        
+
         # api.evaluate(resource, resource.endpoints[operation].url, function(err, out) {
         # console.log(remote, resource, operation)
         # Got API!
-        request resource.endpoints[operation], (err, resp, body) ->
-          
-          # console.log(body)
-          callback null,
-            
-            # response: {
-            #   remote: remote,
-            #   resource: resource,
-            #   operation: operation
-            # },
-            # response: resource.endpoints[operation],
-            response:
-              text: body
+        if resource.endpoints[operation]
+          request resource.endpoints[operation], (err, resp, body) ->
 
-            datapoints:
-              by: "dynamics." + remote.name + "." + resource.name + "." + operation
+            # console.log(body)
+            callback null,
 
-          return
+              # response: {
+              #   remote: remote,
+              #   resource: resource,
+              #   operation: operation
+              # },
+              # response: resource.endpoints[operation],
+              response:
+                text: body
+
+              datapoints:
+                by: "dynamics." + remote.name + "." + resource.name + "." + operation
+
+            return
+        else
+          callback true, null
 
         return
 
