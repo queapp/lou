@@ -4,6 +4,7 @@ reqs = [
   require("./joker")
   require("./location")
   require("./power-control")
+  require("./salutations")
 ]
 
 # run all static queries
