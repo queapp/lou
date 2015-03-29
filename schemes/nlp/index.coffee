@@ -2,6 +2,7 @@ async = require "async"
 _ = require "underscore"
 reqs = [
   require("./weather")
+  require("./time")
   require("./que")
   require("./wolfram")
 ]

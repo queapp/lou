@@ -97,6 +97,7 @@ module.exports = (raw, prefs, callback) ->
             callback null,
               response:
                 msg: "#{cond} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
+                bits: _.flatten([cond.temp, cond.high, cond.low])
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
@@ -119,6 +120,7 @@ module.exports = (raw, prefs, callback) ->
             callback null,
               response:
                 msg: cond.toLowerCase().trim()
+                bits: _.flatten([body.results.channel.atmosphere.humidity])
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
@@ -135,6 +137,7 @@ module.exports = (raw, prefs, callback) ->
             callback null,
               response:
                 msg: "it is #{getYahooDate(body, whenDate).text} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
+                bits: _.flatten([getYahooDate(body, whenDate).text])
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
