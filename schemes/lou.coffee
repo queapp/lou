@@ -153,53 +153,14 @@ lou = module.exports =
     #   console.log r
     # => { text: '5:00 on monday', index: 19 }
     whens: (raw, cb=null) ->
-
-      # what constitutes a date/time combo? (aka a when)
-      templates = [
-        # time and absolute day (like "march 25", or "6pm on july 21, 1969")
-        ///
-        (([012]?[0-9])(\:[0-5][0-9])?(\:[0-5][0-9])?)? # time, which is optional
-        ?(am|pm)? # am or pm, optional
-        (on )? # optional prepositions
-        ((january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept|sep|oct|nov|dec)
-        ([0-3]?[0-9](th|rd|st|nd)?) # month and day, with an optional suffix
-        (, ?[0-9]*))/gi # optional year
-        ///
-
-        # time and day of week (like "5:00pm monday")
-        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)? (on )? ?(next )?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
-
-        # just day of week
-        /(next )?(today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday)/gi
-
-        # just times (like "5:00pm")
-        /([012]?[0-9])\:([0-5][0-9])(\:[0-5][0-9])? ?(am|pm)?/gi
-      ]
-
-      # check for matches from all the possible templates
-      # for i in templates
-      #   matches = raw.match(i)
-      #
-      #   if matches and matches.length
-      #     out =
-      #       text: matches[0],
-      #       index: raw.indexOf matches[0]
-      #
-      #     # if there's a callback, then use it
-      #     if cb
-      #       cb out
-      #       return
-      #     else
-      #       return out
-      #     break
       if cb
-        cb chrono.parse(raw)
+        cb chrono.parse(raw) or [text: defaultLocation]
         return
       else
-        return chrono.parse(raw)
+        return chrono.parse(raw) or [text: defaultLocation]
 
-      # if there's a callback, then use it
-      if cb then cb text: "now" else text: "now"
+        # if there's a callback, then use it
+        # if cb then cb text: "now" else text: "now"
 
     # Return the subject(s) of the command
     # == For example ==
@@ -237,42 +198,51 @@ lou = module.exports =
     #   console.log r
     # => { text: 'john's house', index: 37 }
     wheres: (raw, cb=null) ->
+      done = false
 
       # what constitutes a place combo? (aka a where)
-        templates = [
-          # prepositional phrase terminated by punctuation
-          /[ ](in|at) ([^0-9].*)(\.|\?|\!|\,|\;|\:)/gi
+      templates = [
+        # prepositional phrase terminated by punctuation
+        /[ ](in|at) ([^0-9].*)(\.|\?|\!|\,|\;|\:)/gi
 
-          # prepositional phrase terminated by end-of-string
-          /[ ](in|at) ([^0-9].*) ?(?!yesterday)$/gi
-        ]
+        # prepositional phrase terminated by end-of-string
+        /[ ](in|at) ([^0-9].*) ?(?!yesterday)$/gi
+      ]
 
-        # check for matches from all the possible templates
-        for i in templates
-          matches = raw.match(i)
+      # check for matches from all the possible templates
+      for i in templates
+        matches = raw.match(i)
 
-          if matches and matches.length
-            m = matches[0].replace(/(at|in|\.|\?|\!|\,|\;|\:)/gi, '').trim() # normalize a match
+        if matches and matches.length
+          m = matches[0].replace(/(at|in|\.|\?|\!|\,|\;|\:)/gi, '').trim() # normalize a match
+          done = true
 
-            # because of the similarity between wheres and whens,
-            # let's do some filtering to get rid of any accidental
-            # "when" input.
-            @whens raw, (whens) ->
-              for w in whens
-                m = m.replace w.text, ""
+          # because of the similarity between wheres and whens,
+          # let's do some filtering to get rid of any accidental
+          # "when" input.
+          @whens raw, (whens) ->
+            for w in whens
+              m = m.replace w.text, ""
 
-              out =
-                text: m,
-                index: raw.indexOf m
+            out =
+              text: m,
+              index: raw.indexOf m
 
-              # if there's a callback, then use it
-              if cb
-                cb out
-                return
-              else
-                return out
+            # if there's a callback, then use it
+            if cb
+              cb out
+              return
+            else
+              return out
 
-            break
+          break
+
+      # no location specified? Use the default.
+      if not done
+        lou.persistant.read "location.default", (defaultLocation) ->
+          if cb then cb
+            text: defaultLocation
+            index: null
 
   # formatting of found types
   format:
