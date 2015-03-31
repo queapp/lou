@@ -146,14 +146,13 @@ app.get "/datapoints", (req, res) ->
 # terminate the current session. Most likely, the user has
 # moved on by now, anyway.
 
-# setInterval(function() {
-#   now = (new Date()).getTime();
-#   pt = _.last(data);
-#   if ( pt && pt.timestamp + durationBetweenSessions > now) {
-#     data = [];
-#     console.log(chalk.blue("=> Current session has ended."))
-#   }
-# }, durationBetweenSessions);
+setInterval () ->
+  now = (new Date()).getTime()
+  pt = _.last data
+  if pt and pt.timestamp + durationBetweenSessions < now
+    data = [];
+    console.log chalk.blue("=> Current session has ended.")
+, 1000
 
 # start listening for connections.
 if not module.parent
