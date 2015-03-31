@@ -5,7 +5,7 @@
   "main": "index.coffee",
   "scripts": {
     "test": "SILENT=1 jasmine-node --coffee spec/",
-    "start": "coffee index.coffee"
+    "start": "node_modules/coffee-script/bin/coffee index.coffee"
   },
   "author": "Ryan Gaus <rsg1egoman@gmail.com>",
   "license": "MIT",
@@ -15,6 +15,7 @@
     "body-parser": "^1.12.1",
     "chalk": "^1.0.0",
     "chrono-node": "^1.0.4",
+    "coffee-script": "^1.9.1",
     "express": "^4.12.2",
     "natural": "^0.1.28",
     "pos": "^0.1.9",
