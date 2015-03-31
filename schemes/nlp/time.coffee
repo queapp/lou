@@ -20,7 +20,7 @@ module.exports = (raw, prefs, callback) ->
         min = (whenDate.getMinutes()).toString()
         min = "0" + min if min < 10
 
-        ampm = whenDate.getHours() > 12 and "AM" or "PM"
+        ampm = whenDate.getHours() > 12 and "PM" or "AM"
 
         callback null,
           response:
