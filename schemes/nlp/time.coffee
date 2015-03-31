@@ -25,7 +25,7 @@ module.exports = (raw, prefs, callback) ->
         callback null,
           response:
             msg: "It is #{hours}:#{min} #{ampm}"
-            bits: whenDate.toString().split " "
+            bits: [hours, min, ampm]
           datapoints:
             by: "nlp.time"
             whens: whens
