@@ -333,11 +333,18 @@ lou = module.exports =
       ]
 
 
+    # epoch time in seconds
+    # this removes inconsistoncies caused by program execution time
+    # (new Date().now() is a few milliseconds ahead then when it 
+    # was called earier in the program)
+    nowEpoch = Math.floor(now.getTime() * 0.001)
+    dateEpoch = Math.floor(date.getTime() * 0.001)
+
     # in the past, future, or present?
     switch
 
       # == past ==
-      when now < date
+      when nowEpoch < dateEpoch
         # console.log "PAST", now, date, now < date
         for conj in verbConjugations.past
 
@@ -353,7 +360,7 @@ lou = module.exports =
 
 
       # == future ==
-      when now > date
+      when nowEpoch > dateEpoch
         # console.log "FUTR", now, date, now > date
         for conj in verbConjugations.future
 
