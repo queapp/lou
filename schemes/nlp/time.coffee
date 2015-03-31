@@ -14,12 +14,20 @@ module.exports = (raw, prefs, callback) ->
         whenDate = whens.ref or new Date()
         whenDate = whens[0].ref or whens[0] if whens.length
 
+        hours = whenDate.getHours()
+        hours -= 12 if hours > 12
+
+        min = (whenDate.getMinutes()).toString()
+        min = "0" + min if min < 10
+
+        ampm = whenDate.getHours() > 12 and "AM" or "PM"
+
         callback null,
           response:
-            msg: whenDate.toString()
+            msg: "It is #{hours}:#{min} #{ampm}"
             bits: whenDate.toString().split " "
           datapoints:
             by: "nlp.time"
             whens: whens
-
-  callback true, null
+    else
+      callback true, null
