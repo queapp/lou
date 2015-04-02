@@ -3,6 +3,7 @@ wordnet = new natural.WordNet()
 _ = require("underscore")
 chalk = require("chalk")
 async = require("async")
+lou = require "../lou"
 DBG = ->
 
 
@@ -10,7 +11,7 @@ DBG = ->
 module.exports = (apis) ->
   root = this
   @nounInflector = new natural.NounInflector()
-  
+
   # return the value of the specified record.
   @getValue = (x) ->
     if typeof x is "function"
@@ -18,22 +19,22 @@ module.exports = (apis) ->
     else
       x
 
-  
+
   # create a corpus of the specified words
   # and their synonyms
   @makeCorpusForWords = (words, callback) ->
     corpus = []
     async.forEach words, ((word, callback) ->
-      
+
       # add word to corpus
       corpus.push word
       singularWord = root.nounInflector.singularize(word)
-      
+
       # lookup a corpus word
       DBG "Looking up", chalk.blue(singularWord)
       wordnet.lookup singularWord, (results) ->
         results.forEach (result) ->
-          
+
           # DBG("-> Adding", JSON.stringify(result.synonyms), "to corpus b/c of", chalk.blue(word));
           corpus = corpus.concat(result.synonyms)
           return
@@ -43,7 +44,7 @@ module.exports = (apis) ->
 
       return
     ), (err) ->
-      
+
       # completed corpus
       DBG "Corpus:", JSON.stringify(corpus)
       callback null, _.uniq(corpus)
@@ -51,17 +52,17 @@ module.exports = (apis) ->
 
     return
 
-  
+
   # search for the specified words in the haystack
   @searchFor = (haystack, words, callback) ->
     @makeCorpusForWords words, (err, corpus) ->
       throw err  if err
-      
+
       # check for relevancy with the corpus
       relevancies = _.map(haystack, (remote, ct) ->
         _.intersection(root.getValue(remote.tags), corpus).length
       )
-      
+
       # the most relevant remote
       winner_index = relevancies.indexOf(_.max(relevancies))
       winner = haystack[winner_index]
@@ -71,13 +72,13 @@ module.exports = (apis) ->
 
     return
 
-  
+
   # determine crud operations for a phrase
   @determineCRUDOperation = (words, callback) ->
-    
+
     # split words, if necessary
     words = words.split(" ")  if typeof words isnt "object"
-    
+
     # define corpora
     createWords = [
       "create"
@@ -96,6 +97,7 @@ module.exports = (apis) ->
       "make"
       "new"
       "start"
+      "send"
     ]
     readWords = [
       "read"
@@ -106,6 +108,7 @@ module.exports = (apis) ->
       "translate"
       "view"
       "skim"
+      "check"
     ]
     updateWords = [
       "update"
@@ -131,7 +134,7 @@ module.exports = (apis) ->
       "cancel"
       "revoke"
     ]
-    
+
     # test for crud operation
     if _.intersection(words, createWords).length
       callback null, "create"
@@ -145,34 +148,43 @@ module.exports = (apis) ->
       callback new Error("No operation found.")
     return
 
-  
+  @getQueryVars = (words, callback) ->
+    raw = words.join " "
+    async.series [
+      (cb) ->
+        lou.find.directObjects raw, (out) ->
+          cb null, out
+    ], callback
+
   # parse a string for variable replacements
   @evaluate = (cxt, x, callback) ->
     switch typeof x
       when "string"
-        
+
         # find all variable substitutions
         (x.match(/(\{\{([A-Za-z0-9_-]*)\}\})/g) or []).forEach (i) ->
           name = i.replace("{{", "").replace("}}", "")
-          
-          # get var value
-          varResult = _.filter(cxt.variables or cxt, (i, k) ->
-            k is name
-          )
-          if varResult.length
-            
-            # interpolate value into string
-            putAt = x.indexOf(i)
-            varResult[0] {}, (result) ->
-              x = x.replace(i, result)
-              return
 
-          return
+          # get var value
+          @getQueryVars words, (err, vars) ->
+            vars = cxt.variables.concat(vars) if cxt.variables
+            varResult = _.filter(vars or cxt, (i, k) ->
+              k is name
+            )
+            if varResult.length
+
+              # interpolate value into string
+              putAt = x.indexOf(i)
+              varResult[0] {}, (result) ->
+                x = x.replace(i, result)
+                return
+
+            return
 
         callback null, x
       when "object"
         async.map x, ((val, callback) ->
-          
+
           # console.log(val)
           root.evaluate cxt, val, callback
           return

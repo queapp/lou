@@ -4,6 +4,8 @@ _ = require("underscore")
 chalk = require("chalk")
 async = require("async")
 request = require("request")
+
+lou = require "../lou"
 api_imported = require("./apis")
 ApiDocs = require("./apidocs")
 api = new ApiDocs(api_imported)
@@ -14,7 +16,7 @@ module.exports = (raw, prefs, callback) ->
   # look for the remote
   phrase = raw.split(" ")
   api.searchFor api_imported, phrase, (err, remote) ->
-    throw err  if err
+    throw err if err
 
     # look for the resource in the remote
     api.searchFor remote.resources, phrase, (err, resource) ->
@@ -29,19 +31,21 @@ module.exports = (raw, prefs, callback) ->
           request resource.endpoints[operation], (err, resp, body) ->
 
             # console.log(body)
-            callback null,
+            lou.find.directObject raw, (dos) ->
+              callback null,
 
-              # response: {
-              #   remote: remote,
-              #   resource: resource,
-              #   operation: operation
-              # },
-              # response: resource.endpoints[operation],
-              response:
-                text: body
+                # response: {
+                #   remote: remote,
+                #   resource: resource,
+                #   operation: operation
+                # },
+                # response: resource.endpoints[operation],
+                response:
+                  text: body
 
-              datapoints:
-                by: "dynamics." + remote.name + "." + resource.name + "." + operation
+                datapoints:
+                  by: "dynamics." + remote.name + "." + resource.name + "." + operation
+                  directObjects: dos
 
             return
         else

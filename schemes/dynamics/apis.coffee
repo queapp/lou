@@ -7,15 +7,15 @@ listItems = groceries: [
   "flour"
 ]
 module.exports = [
-  name: "List Manager"
-  tags: ["list"]
+  name: "Twitter"
+  tags: ["tweet", "twitter"]
   resources: [
     {
-      name: "List Objects"
-      tags: ["list"]
+      name: "Tweets"
+      tags: ["tweet", "tweets"]
       endpoints:
         create:
-          url: "http://127.0.0.1:8000/list/create"
+          url: "http://127.0.0.1:8000/newtweet/{{text}}"
           method: "post"
 
         read:
@@ -28,45 +28,6 @@ module.exports = [
 
         delete:
           url: "http://127.0.0.1:8000/list/{{name}}"
-          method: "delete"
-    }
-    {
-      name: "List Items"
-      tags: (it) ->
-        list = _.flatten(_.map(listItems, (v, k) ->
-          listItems[k]
-        ))
-        [
-          "list"
-          "new"
-          "item"
-          "add"
-        ].concat list
-
-      variables:
-        list_name: (it, callback) ->
-          callback "listName"
-          return
-
-        name: (it, callback) ->
-          callback "itemName"
-          return
-
-      endpoints:
-        create:
-          url: "http://127.0.0.1:8000/list/{{list_name}}/{{name}}"
-          method: "post"
-
-        read:
-          url: "http://127.0.0.1:8000/list/{{list_name}}"
-          method: "get"
-
-        update:
-          url: "http://127.0.0.1:8000/list/{{list_name}}/{{name}}/{{payload}}"
-          method: "put"
-
-        delete:
-          url: "http://127.0.0.1:8000/list/{{list_name}}/{{name}}"
           method: "delete"
     }
   ]

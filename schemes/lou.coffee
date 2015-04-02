@@ -244,6 +244,24 @@ lou = module.exports =
             text: defaultLocation
             index: null
 
+    # find the direct object (the thing the subject/verb is referencing)
+    directObject: (raw, cb=null) ->
+      # tag each word in the sentence
+      words = @tokenizer.tokenize raw
+      out = new pos.Tagger().tag words
+
+      # search for the nowns, pronowns, and verbs
+      subjects = _.filter out, (token) ->
+        [word, tag] = token
+        'V' in tag or 'N' in tag or tag is 'PRP'
+
+      if subjects.length
+        first = words.indexOf subjects[0]
+        if cb
+          cb words.slice(first).join " "
+        else
+          words.slice(first).join " "
+
   # formatting of found types
   format:
 
@@ -335,7 +353,7 @@ lou = module.exports =
 
     # epoch time in seconds
     # this removes inconsistoncies caused by program execution time
-    # (new Date().now() is a few milliseconds ahead then when it 
+    # (new Date().now() is a few milliseconds ahead then when it
     # was called earier in the program)
     nowEpoch = Math.floor(now.getTime() * 0.001)
     dateEpoch = Math.floor(date.getTime() * 0.001)
