@@ -5,7 +5,7 @@ chalk = require("chalk")
 _ = require("underscore")
 
 lou = require "./schemes/lou"
-Historian = require "./historian"
+Historian = require "./schemes/historical/historian"
 historian = new Historian
 
 # create express app and parse request body
