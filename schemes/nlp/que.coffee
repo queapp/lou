@@ -2,10 +2,10 @@ request = require("request")
 lou = require("../lou")
 _ = require("underscore")
 module.exports = (raw, prefs, callback) ->
-  
+
   # callback(null, data) for success
   # callback(true, null) if data isn't relevant
-  
+
   # read hostname and api key
   lou.persistant.readAll [
     "que.apikey"
@@ -14,7 +14,7 @@ module.exports = (raw, prefs, callback) ->
     if not key or not host
       callback true, null
       return
-    
+
     # make the query
     request
       url: host + "/natural/query"
@@ -32,15 +32,15 @@ module.exports = (raw, prefs, callback) ->
         authentication: key
     , (error, response, body) ->
       if typeof body is "string" and body.trim().toLowerCase() is "not authenticated"
-        
+
         # isn't authenticated
         callback true, null
       else if typeof body isnt "object" or body.status.toUpperCase() is "ERR"
-        
+
         # no relevant data returned
         callback null, null
       else
-        
+
         # relevant data returned
         callback null,
           response:

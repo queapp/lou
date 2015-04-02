@@ -73,6 +73,7 @@ query = module.exports = (raw, prefs, callback) ->
     handlerPath = ["schemes"].concat(lastHandler.split("."))
     try
       mod = require("./" + path.join.apply(path, handlerPath))
+    catch error
     finally
 
       # call it
