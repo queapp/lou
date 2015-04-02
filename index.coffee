@@ -6,6 +6,7 @@ _ = require("underscore")
 
 lou = require "./schemes/lou"
 Historian = require "./historian"
+historian = new Historian
 
 # create express app and parse request body
 app = require("express")()
@@ -22,8 +23,14 @@ query = module.exports = (raw, prefs, callback) ->
   silent or console.log "---"
 
   # make sure the sentence uses the correct tense of verb for the
-  # specified time frame.
+  # specified time frame. Also, add to history at the same time.
   formatResponse = (response) ->
+
+    # add to history
+    historian.push
+      in: raw
+      out: response
+
     if response.response.msg
       lou.find.whens response.response.msg, (whens) ->
         silent or console.log chalk.cyan(
