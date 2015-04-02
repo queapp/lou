@@ -5,6 +5,7 @@ chalk = require("chalk")
 _ = require("underscore")
 
 lou = require "./schemes/lou"
+Historian = require "./historian"
 
 # create express app and parse request body
 app = require("express")()
@@ -19,6 +20,18 @@ durationBetweenSessions = 30 * 1000
 query = module.exports = (raw, prefs, callback) ->
   prefs = prefs or {}
   silent or console.log "---"
+
+  # make sure the sentence uses the correct tense of verb for the
+  # specified time frame.
+  formatResponse = (response) ->
+    if response.response.msg
+      lou.find.whens response.response.msg, (whens) ->
+        silent or console.log chalk.cyan(
+          "Time Frame:",
+          whens.length and whens[0].ref or "now"
+        )
+        response.response.msg = lou.tenses(response.response.msg, whens)
+    response
 
   # try each scheme, one at a time
   eachScheme = (raw, prefs, callback) ->
@@ -49,13 +62,7 @@ query = module.exports = (raw, prefs, callback) ->
 
         # make sure the sentence uses the correct tense of verb for the
         # specified time frame.
-        if response.response.msg
-          lou.find.whens response.response.msg, (whens) ->
-            silent or console.log chalk.cyan(
-              "Time Frame:",
-              whens.length and whens[0].ref or "now"
-            )
-            response.response.msg = lou.tenses(response.response.msg, whens)
+        response = formatResponse(response)
       else
         response = "NOTHING"
 
@@ -81,15 +88,7 @@ query = module.exports = (raw, prefs, callback) ->
         silent or console.log chalk.red("previous"), chalk.yellow(lastHandler), resp
         if resp and resp.response
 
-          # make sure the sentence uses the correct tense of verb for the
-          # specified time frame.
-          if resp.response.msg
-            lou.find.whens resp.response.msg, (whens) ->
-              silent or console.log chalk.cyan(
-                "Time Frame:",
-                whens.length and whens[0].ref or "now"
-              )
-              resp.response.msg = lou.tenses(resp.response.msg, whens)
+          resp = formatResponse(resp)
 
           # worked!
           callback resp
