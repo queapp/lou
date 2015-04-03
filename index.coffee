@@ -31,7 +31,7 @@ query = module.exports = (raw, prefs, callback) ->
       in: raw
       out: response
 
-    if response.response.msg
+    if response and response.response.msg
       lou.find.whens response.response.msg, (whens) ->
         silent or console.log chalk.cyan(
           "Time Frame:",
@@ -44,6 +44,7 @@ query = module.exports = (raw, prefs, callback) ->
   eachScheme = (raw, prefs, callback) ->
     async.mapSeries [
       "statics"
+      "historical"
       "nlp"
       "dynamics"
     ], ((a, callback) ->
@@ -72,7 +73,6 @@ query = module.exports = (raw, prefs, callback) ->
         response = formatResponse(response)
       else
         response = "NOTHING"
-
       callback response
       return
 
@@ -119,6 +119,7 @@ doSearch = (req, res) ->
     query msg,
       session: data
       body: req.body
+      historian: historian
     , (out) ->
       console.log chalk.yellow("out"), out.response
 

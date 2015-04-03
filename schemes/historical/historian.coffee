@@ -22,9 +22,16 @@ class Historian
 
   # add a request to the end of the query
   push: (request) ->
-    @log.push request
-    @putLog()
+    if request.in and request.out
+      @log.push request
+      @putLog()
+      true
+    else
+      false
 
+  # get the whole log
+  get: () ->
+    return @log
 
 
 module.exports = Historian
