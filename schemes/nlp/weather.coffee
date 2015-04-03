@@ -61,7 +61,7 @@ module.exports = (raw, prefs, callback) ->
   matches = (words) ->
     _.intersection(words, _.pluck(whats, 'text')).length
 
-  # get date from a yahoo request
+  # get date from a yahoo weather request
   getYahooDate = (body, whenDate) ->
     conditions = body.results.channel.item.condition
     if whenDate
@@ -75,6 +75,8 @@ module.exports = (raw, prefs, callback) ->
   # look for places and times specified within the sentence
   lou.find.wheres raw, (wheres) ->
     lou.find.whens raw, (whens) ->
+
+      # get the reference to a date object from the request
       whenDate = whens.ref
       whenDate = whens[0].ref or whens[0] if whens.length
 
@@ -90,14 +92,14 @@ module.exports = (raw, prefs, callback) ->
 
             cond = getYahooDate(body, whenDate)
             if cond.temp
-              cond = "it is #{cond.temp} degrees"
+              cond_text = "it is #{cond.temp} degrees"
             else
-              cond = "the high is #{cond.high} degrees and the low is #{cond.low} degrees"
+              cond_text = "the high is #{cond.high} degrees and the low is #{cond.low} degrees"
 
             callback null,
               response:
-                msg: "#{cond} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
-                bits: _.flatten([cond.temp, cond.high, cond.low])
+                msg: "#{cond_text} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
+                bits: _.compact [cond.temp, cond.high, cond.low]
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
@@ -113,14 +115,14 @@ module.exports = (raw, prefs, callback) ->
 
             # respond if humidity info is available
             if whenDate.getDay() is (new Date()).getDay() and body.results.channel.atmosphere
-              cond = "the humidity is #{body.results.channel.atmosphere.humidity}% in #{wheres.text} #{lou.format.whens(whens)}"
+              cond_text = "the humidity is #{body.results.channel.atmosphere.humidity}% in #{wheres.text} #{lou.format.whens(whens)}"
             else
-              cond = "no humidity information is available for that date or time"
+              cond_text = "no humidity information is available for that date or time"
 
             callback null,
               response:
-                msg: cond.toLowerCase().trim()
-                bits: _.flatten([body.results.channel.atmosphere.humidity])
+                msg: cond_text.toLowerCase().trim()
+                bits: _.compact [body.results.channel.atmosphere.humidity]
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
@@ -134,10 +136,18 @@ module.exports = (raw, prefs, callback) ->
           , (error, response, body) ->
             body = (JSON.parse body or query: null).query
 
+            cond = getYahooDate(body, whenDate)
+
+            if cond.temp
+              temp = "it is #{cond.temp} degrees"
+            else
+              temp = "the high is #{cond.high} degrees and the low is #{cond.low} degrees"
+
+
             callback null,
               response:
-                msg: "it is #{getYahooDate(body, whenDate).text} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
-                bits: _.flatten([getYahooDate(body, whenDate).text])
+                msg: "#{temp} and #{cond.text} in #{wheres.text} #{lou.format.whens(whens)}".toLowerCase().trim()
+                bits: _.compact [cond.temp, cond.high, cond.low, cond.text]
               datapoints:
                 by: "nlp.weather"
                 wheres: wheres
