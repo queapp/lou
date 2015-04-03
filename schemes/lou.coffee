@@ -154,10 +154,16 @@ lou = module.exports =
     # => { text: '5:00 on monday', index: 19 }
     whens: (raw, cb=null) ->
       if cb
-        cb chrono.parse(raw) or [text: defaultLocation]
+        cb chrono.parse(raw) or [
+          text: "now"
+          refs: new Date()
+        ]
         return
       else
-        return chrono.parse(raw) or [text: defaultLocation]
+        return chrono.parse(raw) or [
+          text: "now"
+          refs: new Date()
+        ]
 
         # if there's a callback, then use it
         # if cb then cb text: "now" else text: "now"
