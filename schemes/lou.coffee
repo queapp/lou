@@ -411,3 +411,10 @@ lou = module.exports =
             return raw.replace(/(was|were|am|are|is|will|will be)/gi, conj.verb)
           else
             return raw
+
+  # events to be added to calendar
+  events:
+    create: (item, callback) ->
+    find: (selectors, callback) ->
+    update: (selectors, callback) ->
+    delete: (selectors, callback) ->
