@@ -12,3 +12,4 @@ Planned Stuff
 ---
 - Grocery integration with [cena](//github.com/1egoman/cena2)
 - List integration into [TODOTXTaaS](//github.com/1egoman/todotxtaas)
+- Reminders
