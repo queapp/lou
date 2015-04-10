@@ -142,6 +142,14 @@ lou = module.exports =
       "how"
     ]
 
+    conj: [
+      ";",
+      "and",
+      "but",
+      "then",
+      "next"
+    ]
+
   # find sentence types
   find:
 
@@ -256,17 +264,34 @@ lou = module.exports =
       words = @tokenizer.tokenize raw
       out = new pos.Tagger().tag words
 
-      # search for the nowns, pronowns, and verbs
-      subjects = _.filter out, (token) ->
-        [word, tag] = token
-        'V' in tag or 'N' in tag or tag is 'PRP'
+      directObjectIndicators = [
+        "called"
+        "named"
+        "to"
+      ]
 
-      if subjects.length
-        first = words.indexOf subjects[0]
-        if cb
-          cb words.slice(first).join " "
+      # search for the nowns, pronowns, and verbs
+      ind = _.filter words, (word) ->
+        word in directObjectIndicators
+        # 'V' in tag or 'N' in tag or tag is 'PRP'
+
+      dos = _.map ind, (i) ->
+        if words.length >= words.indexOf(i)+1
+          words[words.indexOf(i)+1]
         else
-          words.slice(first).join " "
+          null
+
+      if cb
+        cb dos
+      else
+        dos
+
+      # if subjects.length
+      #   first = words.indexOf subjects[0]
+      #   if cb
+      #     cb words.slice(first).join " "
+      #   else
+      #     words.slice(first).join " "
 
   # formatting of found types
   format:
@@ -418,3 +443,83 @@ lou = module.exports =
     find: (selectors, callback) ->
     update: (selectors, callback) ->
     delete: (selectors, callback) ->
+
+  # determine the exact opeartion to do based on a query
+  determineCRUDOperation: (words, callback) ->
+
+    # split words, if necessary
+    # and remove punctuation
+    words = words.replace(/[.?!]$/gi, '').split(" ") if typeof words isnt "object"
+
+
+    # define corpora
+    createWords = [
+      "create"
+      "add"
+      "build"
+      "conceive"
+      "constitute"
+      "construct"
+      "design"
+      "devise"
+      "establish"
+      "forge"
+      "spawn"
+      "found"
+      "initiate"
+      "make"
+      "new"
+      "start"
+      "send"
+    ]
+    readWords = [
+      "read"
+      "interpret"
+      "scan"
+      "see"
+      "study"
+      "translate"
+      "view"
+      "skim"
+      "check"
+      "price"
+      "cost"
+      "name"
+    ]
+    updateWords = [
+      "update"
+      "amend"
+      "modernize"
+      "renew"
+      "restore"
+      "revise"
+      "set"
+      "enable"
+      "disable"
+      "turn"
+      "on"
+      "off"
+    ]
+    deleteWords = [
+      "delete"
+      "remove"
+      "destroy"
+      "annul"
+      "trash"
+      "eliminate"
+      "cancel"
+      "revoke"
+    ]
+
+    # test for crud operation
+    if _.intersection(words, createWords).length
+      callback null, "create"
+    else if _.intersection(words, readWords).length
+      callback null, "read"
+    else if _.intersection(words, updateWords).length
+      callback null, "update"
+    else if _.intersection(words, deleteWords).length
+      callback null, "delete"
+    else
+      callback new Error("No operation found.")
+    return
